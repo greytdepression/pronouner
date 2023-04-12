@@ -61,3 +61,4 @@ Identifier | Description
 - [ ] Potentially: VSCode plugin to help write XYR (third party)
 
 ## :heavy_exclamation_mark: Known issues/limitations
+- [ ] Needs a full set of all categories (?) of pronouns (e.g. we don't have "themself" right now)
