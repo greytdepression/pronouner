@@ -2,9 +2,9 @@ use std::io;
 
 use pronouner::*;
 
-const CAST: &'static str = include_str!("characters.json");
-const DICT: &'static str = include_str!("dictionary.json");
-const CONVERSATION: &'static str = include_str!("conversation.xyr");
+const CAST: &'static str = include_str!("assets/characters.json");
+const DICT: &'static str = include_str!("assets/dictionary.json");
+const CONVERSATION: &'static str = include_str!("assets/conversation.xyr");
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Let's load the already known cast from the characters file and the verb dictionary from dictionary.json.

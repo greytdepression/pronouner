@@ -147,6 +147,18 @@ pub(crate) mod tests {
     }
 
     #[test]
+    fn serialize_dict() -> Res {
+        let dict = gen_dict();
+
+        assert_eq!(
+            serde_json::to_string(&dict)?,
+            r#"{"map":{"to have":{"debug_ident":"to have","infinitive":"have","singular1":"have","singular2":"have","singular3":"has","plural1":null,"plural2":null,"plural3":null},"to be":{"debug_ident":"to be","infinitive":"be","singular1":"am","singular2":"are","singular3":"is","plural1":"are","plural2":"are","plural3":"are"}}}"#
+        );
+
+        Ok(())
+    }
+
+    #[test]
     fn verb_test() -> Res {
         let foo = Verb {
             debug_ident: "to be",
