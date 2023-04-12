@@ -14,8 +14,19 @@ impl CharacterCast {
     pub fn get(&self, key: &str) -> Option<&GrammaticalCharacter> {
         self.map.get(key)
     }
-}
 
+    pub fn insert(
+        &mut self,
+        key: String,
+        value: GrammaticalCharacter,
+    ) -> Option<GrammaticalCharacter> {
+        self.map.insert(key, value)
+    }
+
+    pub fn remove(&mut self, key: &str) -> Option<GrammaticalCharacter> {
+        self.map.remove(key)
+    }
+}
 
 #[derive(Debug, Default, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum Pronouns {
