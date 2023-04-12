@@ -6,6 +6,14 @@ use std::fmt::Display;
 
 // TODO: expose API
 
+pub use character::{CharacterCast, GrammaticalCharacter, Pronouns, Title};
+pub use dialog_parser::{DialogMacro, DialogMacroCompiler};
+pub use verbs::{ConjugatePerson, Dictionary, Verb};
+
+//--------------------------------------------------
+// Error Type
+//--------------------------------------------------
+
 #[derive(Debug)]
 pub enum Error {
     Serde(serde_json::Error),
