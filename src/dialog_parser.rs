@@ -206,13 +206,17 @@ fn apply_mods(mut input: String, mods: &[DialogMacroMod]) -> String {
 }
 
 #[cfg(test)]
-mod tests {
+pub(crate) mod tests {
+    use std::ptr::null;
+
+    use crate::{character, verbs};
+
     use super::*;
 
-    type SerdeResult = Result<(), serde_json::Error>;
+    type Res = Result<(), crate::Error>;
 
     #[test]
-    fn print_macro() -> SerdeResult {
+    fn print_macro() -> Res {
         let dm = DialogMacro {
             character_id: "pidge",
             _type: DialogMacroType::PronounSubjective,
@@ -235,10 +239,97 @@ mod tests {
     }
 
     #[test]
-    fn full_compiler_test() -> SerdeResult {
-        // TODO: write a full test
+    fn compile_test() -> Res {
+        let pidge_possessive = DialogMacro {
+            character_id: "pidge",
+            _type: DialogMacroType::PronounPossessive,
+            data: None,
+            mods: vec![],
+        };
+
+        let tupo_objective = DialogMacro {
+            character_id: "tupo",
+            _type: DialogMacroType::PronounObjective,
+            data: None,
+            mods: vec![DialogMacroMod::Capitalized],
+        };
+
+        let cast = character::tests::gen_cast();
+        let dict = verbs::tests::gen_dict();
+
+        let compiler = DialogMacroCompiler::new(cast, dict);
+
+        assert_eq!(compiler.compile(pidge_possessive)?, "their");
+
+        assert_eq!(compiler.compile(tupo_objective)?, "Xem");
 
         Ok(())
     }
 
+    #[test]
+    fn full_compiler_test() -> Res {
+        let source = r#"Do you know {"character_id":"pidge","_type":"Name","data":null,"mods":[]}? {"character_id":"pidge","_type":"PronounSubjective","data":null,"mods":["Capitalized"]} {"character_id":"pidge","_type":"VerbConjugate","data":"to be","mods":[]} super smart! I love {"character_id":"pidge","_type":"PronounObjective","data":null,"mods":[]}! Have you seen {"character_id":"pidge","_type":"PronounPossessive","data":null,"mods":[]} sentient robot?"#;
+        let expected = "Do you know Pidge? They are super smart! I love them! Have you seen their sentient robot?";
+
+        let cast = character::tests::gen_cast();
+        let dict = verbs::tests::gen_dict();
+
+        let compiler = DialogMacroCompiler::new(cast, dict);
+
+        let output = compiler.parse_and_compile(source)?;
+
+        println!("{}", &output);
+
+        assert_eq!(&output, expected,);
+
+        Ok(())
+    }
+
+    #[test]
+    fn error_tests() -> Res {
+        let unknown_verb = r#"{"character_id":"pidge","_type":"VerbConjugate","data":"to be or not to be","mods":[]}"#;
+        let unknown_character =
+            r#"{"character_id":"edward elrich","_type":"VerbConjugate","data":"to be","mods":[]}"#;
+        let null_character =
+            r#"{"character_id":null,"_type":"VerbConjugate","data":"to be","mods":[]}"#;
+        let unknown_type = r#"{"character_id":"pidge","_type":"Alchemy","data":null,"mods":[]}"#;
+        let unknown_mod = r#"{"character_id":"pidge","_type":"VerbConjugate","data":"to be","mods":["Supercalifragilisticexpialidocious"]}"#;
+
+        let cast = character::tests::gen_cast();
+        let dict = verbs::tests::gen_dict();
+
+        let compiler = DialogMacroCompiler::new(cast, dict);
+
+        // Unknown Verb
+        assert!(matches!(
+            compiler.parse_and_compile(unknown_verb),
+            Err(crate::Error::UnknownVerbKey),
+        ));
+
+        // Unknown Character
+        assert!(matches!(
+            compiler.parse_and_compile(unknown_character),
+            Err(crate::Error::UnknownCharacterIdentifier),
+        ));
+
+        // Null Character
+        assert!(matches!(
+            compiler.parse_and_compile(null_character),
+            Err(crate::Error::Serde(_)),
+        ));
+
+        // Unknown Type
+        assert!(matches!(
+            compiler.parse_and_compile(unknown_type),
+            Err(crate::Error::Serde(_)),
+        ));
+
+        // Unknown Mod
+        assert!(matches!(
+            compiler.parse_and_compile(unknown_mod),
+            Err(crate::Error::Serde(_)),
+        ));
+
+        Ok(())
+    }
 }
