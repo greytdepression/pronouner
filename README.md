@@ -1,6 +1,6 @@
 # pronouner
 
-A small crate to help with help with pronouns in video game dialogs and the like.
+ A small crate to help write pronoun agnostic dialog for video games.
 
 ## Usage
 
