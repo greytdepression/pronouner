@@ -66,6 +66,29 @@ impl<'a> Verb<'a> {
             ConjugatePerson::ThirdPlural => self.plural3,
         }
     }
+
+    #[allow(clippy::too_many_arguments)]
+    pub fn new(
+        debug_ident: &'a str,
+        infinitive: Option<&'a str>,
+        singular1: Option<&'a str>,
+        singular2: Option<&'a str>,
+        singular3: Option<&'a str>,
+        plural1: Option<&'a str>,
+        plural2: Option<&'a str>,
+        plural3: Option<&'a str>,
+    ) -> Self {
+        Self {
+            debug_ident,
+            infinitive,
+            singular1,
+            singular2,
+            singular3,
+            plural1,
+            plural2,
+            plural3,
+        }
+    }
 }
 
 impl<'a> Display for Verb<'a> {
