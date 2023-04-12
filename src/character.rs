@@ -1,9 +1,8 @@
-use std::{collections::HashMap, };
+use std::collections::HashMap;
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
 use crate::verbs::ConjugatePerson;
-
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct CharacterCast {
@@ -52,7 +51,12 @@ impl Pronouns {
         possessive: String,
         conjugate_case: ConjugatePerson,
     ) -> Self {
-        Self::Custom { subjective, objective, possessive, conjugate_case }
+        Self::Custom {
+            subjective,
+            objective,
+            possessive,
+            conjugate_case,
+        }
     }
 }
 
@@ -79,7 +83,7 @@ impl Title {
             Title::Mrs => "Mrs.",
             Title::Mx => "Mx.",
             Title::NoTitle => "",
-            Title::Custom(value) => &value,
+            Title::Custom(value) => value,
         }
     }
 }
@@ -133,8 +137,9 @@ impl GrammaticalCharacter {
             Pronouns::TheyThem => "they",
             Pronouns::Name => &self.name,
             Pronouns::XeXyr => "xe",
-            Pronouns::Custom { subjective, .. } => &subjective,
-        }.to_string()
+            Pronouns::Custom { subjective, .. } => subjective,
+        }
+        .to_string()
     }
 
     pub fn objective_pronoun(&self) -> String {
@@ -145,8 +150,9 @@ impl GrammaticalCharacter {
             Pronouns::TheyThem => "them",
             Pronouns::Name => &self.name,
             Pronouns::XeXyr => "xem",
-            Pronouns::Custom { objective, .. } => &objective,
-        }.to_string()
+            Pronouns::Custom { objective, .. } => objective,
+        }
+        .to_string()
     }
 
     pub fn possessive_pronoun(&self) -> String {
@@ -157,10 +163,7 @@ impl GrammaticalCharacter {
             Pronouns::TheyThem => "their".to_string(),
             Pronouns::Name => {
                 let name_ends_in_s = matches!(
-                    self.name
-                        .chars()
-                        .last()
-                        .map(|c| c.to_ascii_lowercase()),
+                    self.name.chars().last().map(|c| c.to_ascii_lowercase()),
                     Some('s')
                 );
 
@@ -168,7 +171,7 @@ impl GrammaticalCharacter {
                 let end_char = if name_ends_in_s { "" } else { "s" };
 
                 format!("{name}'{end_char}")
-            },
+            }
             Pronouns::XeXyr => "xyr".to_string(),
             Pronouns::Custom { possessive, .. } => possessive.to_string(),
         }
@@ -263,10 +266,7 @@ pub(crate) mod tests {
             "Pidge is super smart! I love them! Have you seen their sentient robot?"
         );
         assert_eq!(
-            format!(
-                "{} lion has been lost.",
-                alfons.possessive_pronoun(),
-            ),
+            format!("{} lion has been lost.", alfons.possessive_pronoun(),),
             "Alfons' lion has been lost.",
         );
         assert_eq!(

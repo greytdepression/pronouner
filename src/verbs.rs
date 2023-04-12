@@ -1,14 +1,14 @@
-use std::{fmt::Display, collections::HashMap};
+use std::{collections::HashMap, fmt::Display};
 
-use serde::{Serialize, Deserialize};
+use serde::{Deserialize, Serialize};
 
+use crate::Error;
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct Dictionary<'a> {
     #[serde(borrow)]
     map: HashMap<String, Verb<'a>>,
 }
-
 
 // TODO: find a better name for this
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Hash)]
@@ -164,5 +164,4 @@ pub(crate) mod tests {
 
         Ok(())
     }
-
 }

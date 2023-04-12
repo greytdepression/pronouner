@@ -1,11 +1,10 @@
-use std::str::Chars;
+use serde::{Deserialize, Serialize};
+use smallvec::{smallvec, SmallVec};
 
-use serde::{Serialize, Deserialize};
-use smallvec::{SmallVec, smallvec};
-
-use crate::{character::{CharacterCast, GrammaticalCharacter, Title}, verbs::Dictionary};
-
-
+use crate::{
+    character::{CharacterCast, Title},
+    verbs::Dictionary,
+};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum DialogMacroType {
@@ -102,22 +101,22 @@ impl<'a> DialogMacroCompiler<'a> {
             match c {
                 '{' if !in_string => {
                     counter += 1;
-                },
+                }
                 '}' if !in_string => {
                     counter -= 1;
-                },
+                }
                 '\\' if in_string => {
                     escape = !escape;
-                },
+                }
                 '"' if !in_string => {
                     in_string = true;
-                },
+                }
                 '"' if in_string && !escape => {
                     in_string = false;
                 }
                 _ => {
                     escape = false;
-                },
+                }
             }
 
             bytes += c.len_utf8();
@@ -175,11 +174,12 @@ fn apply_mods(mut input: String, mods: &[DialogMacroMod]) -> String {
             DialogMacroMod::Capitalized => {
                 let mut first = true;
 
-                input = input.chars()
+                input = input
+                    .chars()
                     .flat_map(|x| {
-
                         // Unicode to_uppercase may turn one character into multiple ones. For this reason
                         // we need to provide a vector for the ToUppercase iterator to write into.
+                        // Think e.g. ß -> SS.
                         // Use SmallVec to avoid heap allocations.
                         let y: SmallVec<[char; 2]> = if first {
                             x.to_uppercase().collect()
@@ -192,13 +192,13 @@ fn apply_mods(mut input: String, mods: &[DialogMacroMod]) -> String {
                         y
                     })
                     .collect();
-            },
+            }
             DialogMacroMod::UpperCase => {
                 input = input.to_uppercase();
-            },
+            }
             DialogMacroMod::LowerCase => {
                 input = input.to_lowercase();
-            },
+            }
         }
     }
 
@@ -207,8 +207,6 @@ fn apply_mods(mut input: String, mods: &[DialogMacroMod]) -> String {
 
 #[cfg(test)]
 pub(crate) mod tests {
-    use std::ptr::null;
-
     use crate::{character, verbs};
 
     use super::*;
