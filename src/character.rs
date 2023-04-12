@@ -187,16 +187,21 @@ impl GrammaticalCharacter {
 
 impl Default for GrammaticalCharacter {
     fn default() -> Self {
-       Self::new("##MISSING CHARACTER#".to_string(), Pronouns::default(), None, None)
+        Self::new(
+            "##MISSING CHARACTER#".to_string(),
+            Pronouns::default(),
+            None,
+            None,
+        )
     }
 }
 
 #[cfg(test)]
-mod tests {
+pub(crate) mod tests {
     use super::*;
     type SerdeResult = Result<(), serde_json::Error>;
 
-    fn get_characters() -> [GrammaticalCharacter; 3] {
+    pub(crate) fn get_characters() -> [GrammaticalCharacter; 3] {
         let pidge = GrammaticalCharacter {
             name: "Pidge".into(),
             pronouns: Pronouns::TheyThem,
@@ -219,6 +224,18 @@ mod tests {
         };
 
         [pidge, alfons, tupo]
+    }
+
+    pub(crate) fn gen_cast() -> CharacterCast {
+        let mut cast = CharacterCast::default();
+
+        let [pidge, alfons, tupo] = crate::character::tests::get_characters();
+
+        cast.insert("pidge".to_string(), pidge);
+        cast.insert("alfons".to_string(), alfons);
+        cast.insert("tupo".to_string(), tupo);
+
+        cast
     }
 
     #[test]
