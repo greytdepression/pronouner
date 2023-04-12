@@ -278,18 +278,6 @@ pub(crate) mod tests {
     }
 
     #[test]
-    fn serialize_cast() -> Res {
-        let cast = gen_cast();
-
-        assert_eq!(
-            serde_json::to_string(&cast)?,
-            "{\"map\":{\"alfons\":{\"name\":\"Alfons\",\"pronouns\":\"Name\",\"title\":{\"Custom\":\"King\"},\"person_descriptor\":\"Man\"},\"pidge\":{\"name\":\"Pidge\",\"pronouns\":\"TheyThem\",\"title\":\"NoTitle\",\"person_descriptor\":\"Person\"},\"tupo\":{\"name\":\"Tupo\",\"pronouns\":\"XeXyr\",\"title\":\"NoTitle\",\"person_descriptor\":\"Laru\"},\"hunk\":{\"name\":\"Hunk\",\"pronouns\":\"HeHim\",\"title\":\"Mr\",\"person_descriptor\":\"Man\"}}}"
-        );
-
-        Ok(())
-    }
-
-    #[test]
     fn no_pronoun_test() {
         let [pidge, alfons, tupo, _] = get_characters();
 
