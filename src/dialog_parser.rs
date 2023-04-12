@@ -137,6 +137,7 @@ impl<'a> DialogMacroCompiler<'a> {
         match macr._type {
             DialogMacroType::VerbConjugate => {
                 let Some(data) = macr.data else {
+                    // TODO: don't return strings like that but make use of Result types
                     return "##MISSING VerbConjugate data##".to_string();
                 };
 
@@ -165,6 +166,7 @@ impl<'a> DialogMacroCompiler<'a> {
     }
 }
 
+// TODO: this could probably be moved to its own file
 fn apply_mods(mut input: String, mods: &[DialogMacroMod]) -> String {
     for _mod in mods {
         match _mod {

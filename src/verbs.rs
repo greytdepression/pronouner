@@ -9,6 +9,8 @@ pub struct Dictionary<'a> {
     map: HashMap<String, Verb<'a>>,
 }
 
+
+// TODO: find a better name for this
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Hash)]
 pub enum ConjugatePerson {
     FirstSingular,
