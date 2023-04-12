@@ -110,14 +110,44 @@ impl<'a> Display for Verb<'a> {
 }
 
 #[cfg(test)]
-mod tests {
+pub(crate) mod tests {
     use super::*;
 
+    type Res = Result<(), crate::Error>;
 
-    type SerdeResult = Result<(), serde_json::Error>;
+    pub(crate) fn gen_dict() -> Dictionary<'static> {
+        let to_be = Verb::new(
+            "to be",
+            Some("be"),
+            Some("am"),
+            Some("are"),
+            Some("is"),
+            Some("are"),
+            Some("are"),
+            Some("are"),
+        );
+
+        let to_have = Verb::new(
+            "to have",
+            Some("have"),
+            Some("have"),
+            Some("have"),
+            Some("has"),
+            None,
+            None,
+            None,
+        );
+
+        let mut dict = Dictionary::default();
+
+        dict.insert("to be".to_string(), to_be);
+        dict.insert("to have".to_string(), to_have);
+
+        dict
+    }
 
     #[test]
-    fn verb_test() -> SerdeResult {
+    fn verb_test() -> Res {
         let foo = Verb {
             debug_ident: "to be",
             infinitive: None,
