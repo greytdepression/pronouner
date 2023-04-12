@@ -57,7 +57,19 @@ impl<'a> DialogMacroCompiler<'a> {
         while !src_slice.is_empty() {
             // We expect there to be a next slice, otherwise src_slice should be empty!
             let mut split = src_slice.split('{');
-            let next_slice = split.next().unwrap();
+            let mut next_slice = split.next().unwrap();
+
+            // Check that any '}' is properly escaped
+            if let Some(index) = next_slice.find('}') {
+                // Brace was properly escaped
+                if !matches!(next_slice.get(index..index + 2), Some("}}")) {
+                    return Err(crate::Error::UnmatchedClosingBrace);
+                }
+
+                output.push_str(&next_slice[..index + 1]);
+                src_slice = &src_slice[next_slice[..index + 2].as_bytes().len()..];
+                next_slice = &next_slice[index + 2..];
+            }
 
             // Push the slice onto the output string and shrink src_slice
             output.push_str(next_slice);
@@ -213,6 +225,13 @@ pub(crate) mod tests {
 
     type Res = Result<(), crate::Error>;
 
+    fn gen_compiler() -> DialogMacroCompiler<'static> {
+        DialogMacroCompiler {
+            cast: character::tests::gen_cast(),
+            dictionary: verbs::tests::gen_dict(),
+        }
+    }
+
     #[test]
     fn print_macro() -> Res {
         let dm = DialogMacro {
@@ -326,6 +345,34 @@ pub(crate) mod tests {
         assert!(matches!(
             compiler.parse_and_compile(unknown_mod),
             Err(crate::Error::Serde(_)),
+        ));
+
+        Ok(())
+    }
+
+    #[test]
+    fn parse_escapes() -> Res {
+        let compiler = gen_compiler();
+
+        let escaped_brace = "Do you ever just public static void main(String[] args) {{}}?";
+
+        assert_eq!(
+            compiler.parse_and_compile(escaped_brace)?,
+            "Do you ever just public static void main(String[] args) {}?"
+        );
+
+        let mixed_escaped_and_macro = r#"{{{"character_id":"pidge","_type":"PronounObjective","data":null,"mods":["UpperCase"]}}}"#;
+
+        assert_eq!(
+            compiler.parse_and_compile(mixed_escaped_and_macro)?,
+            "{THEM}"
+        );
+
+        let missing_closing_escape = "Oh no! This closing } is not escaped D:";
+
+        assert!(matches!(
+            compiler.parse_and_compile(missing_closing_escape),
+            Err(crate::Error::UnmatchedClosingBrace)
         ));
 
         Ok(())

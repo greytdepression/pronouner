@@ -21,6 +21,7 @@ pub enum Error {
     UndefinedVerbCase,
     MissingMacroData,
     UnknownCharacterIdentifier,
+    UnmatchedClosingBrace,
 }
 
 impl Display for Error {
@@ -31,6 +32,7 @@ impl Display for Error {
             Error::UndefinedVerbCase => f.write_str("undefined verb case"),
             Error::MissingMacroData => f.write_str("macro misses data attribute"),
             Error::UnknownCharacterIdentifier => f.write_str("unknown character identifier"),
+            Error::UnmatchedClosingBrace => f.write_str("unmatched closing brace"),
         }
     }
 }
