@@ -40,7 +40,8 @@ Identifier | Description
 `TitlePlusName` | The character's title and their name (Mx. Y)
 `PronounSubjective` | The character's subjective pronoun (they)
 `PronounObjective` | The character's objective pronoun (them)
-`PronounPossessive` | The character's possessive pronoun (their)
+`DeterminerPossessive` | The character's possessive determiner (their)
+`PronounPossessive` | The character's possessive pronoun (theirs)
 `PersonDescriptor` | The character's descriptor as a person (man/woman/person)
 
 **`mod`** A list of modifications for the output string. The options are:
@@ -49,6 +50,15 @@ Identifier | Description
 `Capitalized` | Make the first letter uppercase and leave the rest
 `LowerCase` | Make every character lowercase
 `UpperCase` | Make every character uppercase
+
+## :ok_person: Pronoun Guide
+Type of Pronoun | Examples | In a Sentence
+--- | --- | ---
+Subjective Pronoun | he/she/they | They are a scientist.
+Objective Pronoun | him/her/them | I like her.
+Possessive Determiner | his/her/their | This is his bed.
+Possessive Pronoun | his/hers/theirs | Just use theirs.
+Reflexive Pronoun | himself/herself/themself | She did it herself.
 
 ## :checkered_flag: Goals
 
