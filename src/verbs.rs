@@ -9,7 +9,7 @@ pub struct Dictionary<'a> {
     map: HashMap<String, Verb<'a>>,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Hash)]
 pub enum ConjugatePerson {
     FirstSingular,
     SecondSingular,

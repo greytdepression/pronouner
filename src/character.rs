@@ -2,6 +2,8 @@ use std::{collections::HashMap, };
 
 use serde::{Serialize, Deserialize};
 
+use crate::verbs::ConjugatePerson;
+
 
 #[derive(Debug, Default, Serialize, Deserialize)]
 pub struct CharacterCast {
@@ -28,6 +30,7 @@ pub enum Pronouns {
         subjective: String,
         objective: String,
         possessive: String,
+        conjugate_case: ConjugatePerson,
     },
 }
 
@@ -36,8 +39,9 @@ impl Pronouns {
         subjective: String,
         objective: String,
         possessive: String,
+        conjugate_case: ConjugatePerson,
     ) -> Self {
-        Self::Custom { subjective, objective, possessive }
+        Self::Custom { subjective, objective, possessive, conjugate_case }
     }
 }
 
@@ -55,6 +59,23 @@ pub enum Title {
 impl Title {
     pub fn custom(title: String) -> Self {
         Self::Custom(title)
+    }
+
+    pub fn str(&self) -> &str {
+        match self {
+            Title::Mr => "Mr.",
+            Title::Ms => "Ms.",
+            Title::Mrs => "Mrs.",
+            Title::Mx => "Mx.",
+            Title::NoTitle => "",
+            Title::Custom(value) => &value,
+        }
+    }
+}
+
+impl ToString for Title {
+    fn to_string(&self) -> String {
+        self.str().to_string()
     }
 }
 
@@ -79,6 +100,18 @@ impl GrammaticalCharacter {
             title,
             person_descriptor,
         }
+    }
+
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+
+    pub fn title(&self) -> Option<&Title> {
+        self.title.as_ref()
+    }
+
+    pub fn person_descriptor(&self) -> Option<&String> {
+        self.person_descriptor.as_ref()
     }
 
     pub fn subjective_pronoun(&self) -> String {
@@ -112,7 +145,7 @@ impl GrammaticalCharacter {
             Pronouns::ItIts => "its".to_string(),
             Pronouns::TheyThem => "their".to_string(),
             Pronouns::Name => {
-                let ends_in_s = matches!(
+                let name_ends_in_s = matches!(
                     self.name
                         .chars()
                         .last()
@@ -121,12 +154,22 @@ impl GrammaticalCharacter {
                 );
 
                 let name = &self.name;
-                let end_char = if ends_in_s { "" } else { "s" };
+                let end_char = if name_ends_in_s { "" } else { "s" };
 
                 format!("{name}'{end_char}")
             },
             Pronouns::XeXyr => "xyr".to_string(),
             Pronouns::Custom { possessive, .. } => possessive.to_string(),
+        }
+    }
+
+    pub fn conjugate_case(&self) -> ConjugatePerson {
+        use ConjugatePerson::*;
+        use Pronouns::*;
+        match &self.pronouns {
+            HeHim | SheHer | ItIts | XeXyr | Name => ThirdSingular,
+            TheyThem => ThirdPlural,
+            Pronouns::Custom { conjugate_case, .. } => *conjugate_case,
         }
     }
 }
