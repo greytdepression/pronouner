@@ -30,23 +30,18 @@ impl<'a> Dictionary<'a> {
         self.map.remove(key)
     }
 
-    pub fn conjugate(&self, key: &str, person: ConjugatePerson) -> String {
-        let fallback = || {
-            format!("##MISSING '{key}'.'{person:?}'##")
-        };
-
+    pub fn conjugate(&self, key: &str, person: ConjugatePerson) -> Result<String, Error> {
         let Some(verb) = self.map.get(key) else {
-            return fallback();
+            return Err(Error::UnknownVerbKey);
         };
 
         let Some(conj_verb) = verb.get(person) else {
-            return fallback();
+            return Err(Error::UndefinedVerbCase);
         };
 
-        conj_verb.to_string()
+        Ok(conj_verb.to_string())
     }
 }
-
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Verb<'a> {
