@@ -233,6 +233,38 @@ pub(crate) mod tests {
     }
 
     #[test]
+    fn test_mods() -> Res {
+        // DialogMacroMod::Capitalized
+        assert_eq!(
+            apply_mods("fooBar".to_string(), &[DialogMacroMod::Capitalized]),
+            "FooBar"
+        );
+
+        // DialogMacroMod::UpperCase
+        assert_eq!(
+            apply_mods("fooBar".to_string(), &[DialogMacroMod::UpperCase]),
+            "FOOBAR"
+        );
+
+        // DialogMacroMod::LowerCase
+        assert_eq!(
+            apply_mods("fooBar".to_string(), &[DialogMacroMod::LowerCase]),
+            "foobar"
+        );
+
+        // Chaining
+        assert_eq!(
+            apply_mods(
+                "fooBar".to_string(),
+                &[DialogMacroMod::LowerCase, DialogMacroMod::Capitalized]
+            ),
+            "Foobar"
+        );
+
+        Ok(())
+    }
+
+    #[test]
     fn print_macro() -> Res {
         let dm = DialogMacro {
             character_id: "pidge",
