@@ -1,0 +1,30 @@
+{
+    "map": {
+        "tupo": {
+            "name": "Tupo",
+            "pronouns": "XeXyr",
+            "title": "NoTitle",
+            "person_descriptor": "Laru"
+        },
+        "hunk": {
+            "name": "Hunk",
+            "pronouns": "HeHim",
+            "title": "Mr",
+            "person_descriptor": "Man"
+        },
+        "pidge": {
+            "name": "Pidge",
+            "pronouns": "TheyThem",
+            "title": "NoTitle",
+            "person_descriptor": "Person"
+        },
+        "alfons": {
+            "name": "Alfons",
+            "pronouns": "Name",
+            "title": {
+                "Custom": "King"
+            },
+            "person_descriptor": "Man"
+        }
+    }
+}

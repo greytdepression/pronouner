@@ -1,0 +1,4 @@
+{"character_id":"hunk","_type":"Name","data":null,"mods":["Capitalized"]}	Hey, {"character_id":"pidge","_type":"Name","data":null,"mods":[]}! Who's your friend?
+{"character_id":"pidge","_type":"Name","data":null,"mods":["Capitalized"]}	{"character_id":"hunk","_type":"Name","data":null,"mods":[]}, this is {"character_id":"player","_type":"Name","data":null,"mods":[]}! {"character_id":"player","_type":"PronounSubjective","data":null,"mods":["Capitalized"]} {"character_id":"player","_type":"VerbConjugate","data":"to be","mods":[]} new here and I'm just showing {"character_id":"player","_type":"PronounObjective","data":null,"mods":[]} around.
+{"character_id":"hunk","_type":"Name","data":null,"mods":["Capitalized"]}	Cool! {"character_id":"player","_type":"Name","data":null,"mods":["Capitalized"]}, nice to meet you!
+{"character_id":"player","_type":"Name","data":null,"mods":["Capitalized"]}	Hi! Nice meeting you too!

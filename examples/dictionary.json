@@ -1,0 +1,24 @@
+{
+    "map": {
+        "to have": {
+            "debug_ident": "to have",
+            "infinitive": "have",
+            "singular1": "have",
+            "singular2": "have",
+            "singular3": "has",
+            "plural1": "have",
+            "plural2": "have",
+            "plural3": "have"
+        },
+        "to be": {
+            "debug_ident": "to be",
+            "infinitive": "be",
+            "singular1": "am",
+            "singular2": "are",
+            "singular3": "is",
+            "plural1": "are",
+            "plural2": "are",
+            "plural3": "are"
+        }
+    }
+}
