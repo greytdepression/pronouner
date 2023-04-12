@@ -202,9 +202,9 @@ impl Default for GrammaticalCharacter {
 #[cfg(test)]
 pub(crate) mod tests {
     use super::*;
-    type SerdeResult = Result<(), serde_json::Error>;
+    type Res = Result<(), crate::Error>;
 
-    pub(crate) fn get_characters() -> [GrammaticalCharacter; 3] {
+    pub(crate) fn get_characters() -> [GrammaticalCharacter; 4] {
         let pidge = GrammaticalCharacter {
             name: "Pidge".into(),
             pronouns: Pronouns::TheyThem,
@@ -226,35 +226,44 @@ pub(crate) mod tests {
             person_descriptor: Some("Laru".to_string()),
         };
 
-        [pidge, alfons, tupo]
+        let hunk = GrammaticalCharacter {
+            name: "Hunk".to_string(),
+            pronouns: Pronouns::HeHim,
+            title: Some(Title::Mr),
+            person_descriptor: Some("Man".to_string()),
+        };
+
+        [pidge, alfons, tupo, hunk]
     }
 
     pub(crate) fn gen_cast() -> CharacterCast {
         let mut cast = CharacterCast::default();
 
-        let [pidge, alfons, tupo] = crate::character::tests::get_characters();
+        let [pidge, alfons, tupo, hunk] = crate::character::tests::get_characters();
 
         cast.insert("pidge".to_string(), pidge);
         cast.insert("alfons".to_string(), alfons);
         cast.insert("tupo".to_string(), tupo);
+        cast.insert("hunk".to_string(), hunk);
 
         cast
     }
 
     #[test]
-    fn serde_test() -> SerdeResult {
-        let [pidge, alfons, tupo] = get_characters();
+    fn serialize_cast() -> Res {
+        let cast = gen_cast();
 
-        println!("{}", serde_json::to_string(&pidge)?);
-        println!("{}", serde_json::to_string(&alfons)?);
-        println!("{}", serde_json::to_string(&tupo)?);
+        assert_eq!(
+            serde_json::to_string(&cast)?,
+            "{\"map\":{\"alfons\":{\"name\":\"Alfons\",\"pronouns\":\"Name\",\"title\":{\"Custom\":\"King\"},\"person_descriptor\":\"Man\"},\"pidge\":{\"name\":\"Pidge\",\"pronouns\":\"TheyThem\",\"title\":\"NoTitle\",\"person_descriptor\":\"Person\"},\"tupo\":{\"name\":\"Tupo\",\"pronouns\":\"XeXyr\",\"title\":\"NoTitle\",\"person_descriptor\":\"Laru\"},\"hunk\":{\"name\":\"Hunk\",\"pronouns\":\"HeHim\",\"title\":\"Mr\",\"person_descriptor\":\"Man\"}}}"
+        );
 
         Ok(())
     }
 
     #[test]
     fn no_pronoun_test() {
-        let [pidge, alfons, tupo] = get_characters();
+        let [pidge, alfons, tupo, _] = get_characters();
 
         assert_eq!(
             format!(
