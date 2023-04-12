@@ -241,7 +241,10 @@ pub(crate) mod tests {
             mods: vec![],
         };
 
-        println!("{}", serde_json::to_string(&dm)?);
+        assert_eq!(
+            serde_json::to_string(&dm)?,
+            r#"{"character_id":"pidge","_type":"PronounSubjective","data":null,"mods":[]}"#
+        );
 
         let verb_dm = DialogMacro {
             character_id: "pidge",
@@ -250,7 +253,10 @@ pub(crate) mod tests {
             mods: vec![],
         };
 
-        println!("{}", serde_json::to_string(&verb_dm)?);
+        assert_eq!(
+            serde_json::to_string(&verb_dm)?,
+            r#"{"character_id":"pidge","_type":"VerbConjugate","data":"to be","mods":[]}"#
+        );
 
         Ok(())
     }
@@ -271,10 +277,7 @@ pub(crate) mod tests {
             mods: vec![DialogMacroMod::Capitalized],
         };
 
-        let cast = character::tests::gen_cast();
-        let dict = verbs::tests::gen_dict();
-
-        let compiler = DialogMacroCompiler::new(cast, dict);
+        let compiler = gen_compiler();
 
         assert_eq!(compiler.compile(pidge_possessive)?, "their");
 
@@ -288,14 +291,9 @@ pub(crate) mod tests {
         let source = r#"Do you know {"character_id":"pidge","_type":"Name","data":null,"mods":[]}? {"character_id":"pidge","_type":"PronounSubjective","data":null,"mods":["Capitalized"]} {"character_id":"pidge","_type":"VerbConjugate","data":"to be","mods":[]} super smart! I love {"character_id":"pidge","_type":"PronounObjective","data":null,"mods":[]}! Have you seen {"character_id":"pidge","_type":"PronounPossessive","data":null,"mods":[]} sentient robot?"#;
         let expected = "Do you know Pidge? They are super smart! I love them! Have you seen their sentient robot?";
 
-        let cast = character::tests::gen_cast();
-        let dict = verbs::tests::gen_dict();
-
-        let compiler = DialogMacroCompiler::new(cast, dict);
+        let compiler = gen_compiler();
 
         let output = compiler.parse_and_compile(source)?;
-
-        println!("{}", &output);
 
         assert_eq!(&output, expected,);
 
@@ -312,10 +310,7 @@ pub(crate) mod tests {
         let unknown_type = r#"{"character_id":"pidge","_type":"Alchemy","data":null,"mods":[]}"#;
         let unknown_mod = r#"{"character_id":"pidge","_type":"VerbConjugate","data":"to be","mods":["Supercalifragilisticexpialidocious"]}"#;
 
-        let cast = character::tests::gen_cast();
-        let dict = verbs::tests::gen_dict();
-
-        let compiler = DialogMacroCompiler::new(cast, dict);
+        let compiler = gen_compiler();
 
         // Unknown Verb
         assert!(matches!(
