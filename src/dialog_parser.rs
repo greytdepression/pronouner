@@ -39,19 +39,23 @@ pub struct DialogMacroCompiler<'a> {
 }
 
 impl<'a> DialogMacroCompiler<'a> {
+    pub fn new(cast: CharacterCast, dict: Dictionary<'a>) -> Self {
+        Self {
+            cast,
+            dictionary: dict,
+        }
+    }
 
-    pub fn parse_and_compile(&self, src: &str) -> Result<String, serde_json::Error> {
+    pub fn parse_and_compile(&self, src: &str) -> Result<String, crate::Error> {
         let mut output = String::new();
 
-        let mut src_slice = &src[..];
+        let mut src_slice = src;
 
         if src_slice.is_empty() {
             return Ok("".to_string());
         }
 
-
         while !src_slice.is_empty() {
-
             // We expect there to be a next slice, otherwise src_slice should be empty!
             let mut split = src_slice.split('{');
             let next_slice = split.next().unwrap();
@@ -75,7 +79,7 @@ impl<'a> DialogMacroCompiler<'a> {
 
                 let macro_: DialogMacro = serde_json::from_str(macro_str)?;
 
-                let value = self.compile(macro_);
+                let value = self.compile(macro_)?;
 
                 output.push_str(&value);
             }
@@ -126,31 +130,27 @@ impl<'a> DialogMacroCompiler<'a> {
         &src[0..bytes]
     }
 
-    pub fn compile(&self, macr: DialogMacro<'a>) -> String {
-
-        // TODO: do something more efficient
-        let default_char = GrammaticalCharacter::default();
-
-        let person = self.cast.get(macr.character_id).unwrap_or(&default_char);
+    pub fn compile(&self, macr: DialogMacro<'a>) -> Result<String, crate::Error> {
+        let Some(person) = self.cast.get(macr.character_id) else {
+            return Err(crate::Error::UnknownCharacterIdentifier);
+        };
 
         // TODO: there's probably a bit too much logic in this function that should be put somewhere else
-        match macr._type {
+        let raw_string = match macr._type {
             DialogMacroType::VerbConjugate => {
                 let Some(data) = macr.data else {
                     // TODO: don't return strings like that but make use of Result types
-                    return "##MISSING VerbConjugate data##".to_string();
+                    return Err(crate::Error::MissingMacroData);
                 };
 
-                self.dictionary.conjugate(data, person.conjugate_case())
-            },
+                self.dictionary.conjugate(data, person.conjugate_case())?
+            }
             DialogMacroType::Name => person.name().to_string(),
-            DialogMacroType::TitlePlusName => {
-                match person.title() {
-                    Some(title) if !matches!(title, &Title::NoTitle) => {
-                        format!("{} {}", title.str(), person.name())
-                    }
-                    _ => person.name().to_string(),
+            DialogMacroType::TitlePlusName => match person.title() {
+                Some(title) if !matches!(title, &Title::NoTitle) => {
+                    format!("{} {}", title.str(), person.name())
                 }
+                _ => person.name().to_string(),
             },
             DialogMacroType::PronounSubjective => person.subjective_pronoun(),
             DialogMacroType::PronounObjective => person.objective_pronoun(),
@@ -161,8 +161,10 @@ impl<'a> DialogMacroCompiler<'a> {
                 } else {
                     "person".to_string()
                 }
-            },
-        }
+            }
+        };
+
+        Ok(apply_mods(raw_string, &macr.mods))
     }
 }
 
