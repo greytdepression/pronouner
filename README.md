@@ -67,9 +67,10 @@ Reflexive Pronoun | himself/herself/themself | She did it herself.
 - [x] XYR parser + compiler
 - [x] Character and dictionary context
 - [x] Serializing and deserializing of context
-- [ ] Multiple pronouns?
 - [ ] Command line tool to help write XYR
 - [ ] Potentially: VSCode plugin to help write XYR (third party)
+- [ ] Multiple pronouns?
+- [ ] Support for more languages than just English. This would require major architectural changes!
 
 ## :heavy_exclamation_mark: Known issues/limitations
 - [x] Needs a full set of all categories (?) of pronouns (e.g. we don't have "themself" right now)
