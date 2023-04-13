@@ -15,6 +15,7 @@ pub enum DialogMacroType {
     ObjectivePronoun,
     PossessiveDeterminer,
     PossessivePronoun,
+    ReflexivePronoun,
     PersonDescriptor,
 }
 
@@ -168,6 +169,7 @@ impl<'a> DialogMacroCompiler<'a> {
             DialogMacroType::ObjectivePronoun => person.objective_pronoun(),
             DialogMacroType::PossessiveDeterminer => person.possessive_determiner(),
             DialogMacroType::PossessivePronoun => person.possessive_pronoun(),
+            DialogMacroType::ReflexivePronoun => person.reflexive_pronoun(),
             DialogMacroType::PersonDescriptor => {
                 if let Some(descriptor) = person.person_descriptor() {
                     descriptor.to_string()

@@ -42,6 +42,7 @@ Identifier | Description
 `ObjectivePronoun` | The character's objective pronoun (them)
 `PossessiveDeterminer` | The character's possessive determiner (their)
 `PossessivePronoun` | The character's possessive pronoun (theirs)
+`ReflexivePronoun` | The character's reflexive pronoun (themself)
 `PersonDescriptor` | The character's descriptor as a person (man/woman/person)
 
 **`mod`** A list of modifications for the output string. The options are:

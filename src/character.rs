@@ -41,6 +41,7 @@ pub enum Pronouns {
         objective: String,
         possessive_determiner: String,
         possessive: String,
+        reflexive: String,
         conjugate_case: ConjugatePerson,
     },
 }
@@ -51,6 +52,7 @@ impl Pronouns {
         objective: String,
         possessive: String,
         possessive_determiner: String,
+        reflexive: String,
         conjugate_case: ConjugatePerson,
     ) -> Self {
         Self::Custom {
@@ -58,6 +60,7 @@ impl Pronouns {
             objective,
             possessive_determiner,
             possessive,
+            reflexive,
             conjugate_case,
         }
     }
@@ -202,6 +205,29 @@ impl GrammaticalCharacter {
             }
             Pronouns::XeXyr => "xyrs".to_string(),
             Pronouns::Custom { possessive, .. } => possessive.to_string(),
+        }
+    }
+
+    pub fn reflexive_pronoun(&self) -> String {
+        match &self.pronouns {
+            Pronouns::HeHim => "himself".to_string(),
+            Pronouns::SheHer => "herself".to_string(),
+            Pronouns::ItIts => "itself".to_string(),
+            Pronouns::TheyThem => "themself".to_string(),
+            Pronouns::Name => {
+                let name_ends_in_s = matches!(
+                    self.name.chars().last().map(|c| c.to_ascii_lowercase()),
+                    Some('s')
+                );
+
+                let name = &self.name;
+                let end_char = if name_ends_in_s { "" } else { "s" };
+
+                // FIXME: find a good solution for this case
+                format!("{name}'{end_char} self")
+            }
+            Pronouns::XeXyr => "xyrself".to_string(),
+            Pronouns::Custom { reflexive, .. } => reflexive.to_string(),
         }
     }
 
