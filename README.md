@@ -38,10 +38,10 @@ Identifier | Description
 `VerbConjugate` | Conjugate the verb
 `Name` | The name of the character
 `TitlePlusName` | The character's title and their name (Mx. Y)
-`PronounSubjective` | The character's subjective pronoun (they)
-`PronounObjective` | The character's objective pronoun (them)
-`DeterminerPossessive` | The character's possessive determiner (their)
-`PronounPossessive` | The character's possessive pronoun (theirs)
+`SubjectivePronoun` | The character's subjective pronoun (they)
+`ObjectivePronoun` | The character's objective pronoun (them)
+`PossessiveDeterminer` | The character's possessive determiner (their)
+`PossessivePronoun` | The character's possessive pronoun (theirs)
 `PersonDescriptor` | The character's descriptor as a person (man/woman/person)
 
 **`mod`** A list of modifications for the output string. The options are:

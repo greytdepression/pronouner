@@ -11,9 +11,9 @@ pub enum DialogMacroType {
     VerbConjugate,
     Name,
     TitlePlusName,
-    PronounSubjective,
-    PronounObjective,
-    PronounPossessive,
+    SubjectivePronoun,
+    ObjectivePronoun,
+    PossessivePronoun,
     PersonDescriptor,
 }
 
@@ -163,9 +163,9 @@ impl<'a> DialogMacroCompiler<'a> {
                 }
                 _ => person.name().to_string(),
             },
-            DialogMacroType::PronounSubjective => person.subjective_pronoun(),
-            DialogMacroType::PronounObjective => person.objective_pronoun(),
-            DialogMacroType::PronounPossessive => person.possessive_pronoun(),
+            DialogMacroType::SubjectivePronoun => person.subjective_pronoun(),
+            DialogMacroType::ObjectivePronoun => person.objective_pronoun(),
+            DialogMacroType::PossessivePronoun => person.possessive_pronoun(),
             DialogMacroType::PersonDescriptor => {
                 if let Some(descriptor) = person.person_descriptor() {
                     descriptor.to_string()
@@ -268,14 +268,14 @@ pub(crate) mod tests {
     fn print_macro() -> Res {
         let dm = DialogMacro {
             character_id: "pidge",
-            _type: DialogMacroType::PronounSubjective,
+            _type: DialogMacroType::SubjectivePronoun,
             data: None,
             mods: vec![],
         };
 
         assert_eq!(
             serde_json::to_string(&dm)?,
-            r#"{"character_id":"pidge","_type":"PronounSubjective","data":null,"mods":[]}"#
+            r#"{"character_id":"pidge","_type":"SubjectivePronoun","data":null,"mods":[]}"#
         );
 
         let verb_dm = DialogMacro {
@@ -297,14 +297,14 @@ pub(crate) mod tests {
     fn compile_test() -> Res {
         let pidge_possessive = DialogMacro {
             character_id: "pidge",
-            _type: DialogMacroType::PronounPossessive,
+            _type: DialogMacroType::PossessivePronoun,
             data: None,
             mods: vec![],
         };
 
         let tupo_objective = DialogMacro {
             character_id: "tupo",
-            _type: DialogMacroType::PronounObjective,
+            _type: DialogMacroType::ObjectivePronoun,
             data: None,
             mods: vec![DialogMacroMod::Capitalized],
         };
@@ -320,7 +320,7 @@ pub(crate) mod tests {
 
     #[test]
     fn full_compiler_test() -> Res {
-        let source = r#"Do you know {"character_id":"pidge","_type":"Name","data":null,"mods":[]}? {"character_id":"pidge","_type":"PronounSubjective","data":null,"mods":["Capitalized"]} {"character_id":"pidge","_type":"VerbConjugate","data":"to be","mods":[]} super smart! I love {"character_id":"pidge","_type":"PronounObjective","data":null,"mods":[]}! Have you seen {"character_id":"pidge","_type":"PronounPossessive","data":null,"mods":[]} sentient robot?"#;
+        let source = r#"Do you know {"character_id":"pidge","_type":"Name","data":null,"mods":[]}? {"character_id":"pidge","_type":"SubjectivePronoun","data":null,"mods":["Capitalized"]} {"character_id":"pidge","_type":"VerbConjugate","data":"to be","mods":[]} super smart! I love {"character_id":"pidge","_type":"ObjectivePronoun","data":null,"mods":[]}! Have you seen {"character_id":"pidge","_type":"PossessivePronoun","data":null,"mods":[]} sentient robot?"#;
         let expected = "Do you know Pidge? They are super smart! I love them! Have you seen their sentient robot?";
 
         let compiler = gen_compiler();
@@ -388,7 +388,7 @@ pub(crate) mod tests {
             "Do you ever just public static void main(String[] args) {}?"
         );
 
-        let mixed_escaped_and_macro = r#"{{{"character_id":"pidge","_type":"PronounObjective","data":null,"mods":["UpperCase"]}}}"#;
+        let mixed_escaped_and_macro = r#"{{{"character_id":"pidge","_type":"ObjectivePronoun","data":null,"mods":["UpperCase"]}}}"#;
 
         assert_eq!(
             compiler.parse_and_compile(mixed_escaped_and_macro)?,
