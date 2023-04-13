@@ -13,6 +13,7 @@ pub enum DialogMacroType {
     TitlePlusName,
     SubjectivePronoun,
     ObjectivePronoun,
+    PossessiveDeterminer,
     PossessivePronoun,
     PersonDescriptor,
 }
@@ -165,6 +166,7 @@ impl<'a> DialogMacroCompiler<'a> {
             },
             DialogMacroType::SubjectivePronoun => person.subjective_pronoun(),
             DialogMacroType::ObjectivePronoun => person.objective_pronoun(),
+            DialogMacroType::PossessiveDeterminer => person.possessive_determiner(),
             DialogMacroType::PossessivePronoun => person.possessive_pronoun(),
             DialogMacroType::PersonDescriptor => {
                 if let Some(descriptor) = person.person_descriptor() {
@@ -311,7 +313,7 @@ pub(crate) mod tests {
 
         let compiler = gen_compiler();
 
-        assert_eq!(compiler.compile(pidge_possessive)?, "their");
+        assert_eq!(compiler.compile(pidge_possessive)?, "theirs");
 
         assert_eq!(compiler.compile(tupo_objective)?, "Xem");
 
@@ -320,7 +322,7 @@ pub(crate) mod tests {
 
     #[test]
     fn full_compiler_test() -> Res {
-        let source = r#"Do you know {"character_id":"pidge","_type":"Name","data":null,"mods":[]}? {"character_id":"pidge","_type":"SubjectivePronoun","data":null,"mods":["Capitalized"]} {"character_id":"pidge","_type":"VerbConjugate","data":"to be","mods":[]} super smart! I love {"character_id":"pidge","_type":"ObjectivePronoun","data":null,"mods":[]}! Have you seen {"character_id":"pidge","_type":"PossessivePronoun","data":null,"mods":[]} sentient robot?"#;
+        let source = r#"Do you know {"character_id":"pidge","_type":"Name","data":null,"mods":[]}? {"character_id":"pidge","_type":"SubjectivePronoun","data":null,"mods":["Capitalized"]} {"character_id":"pidge","_type":"VerbConjugate","data":"to be","mods":[]} super smart! I love {"character_id":"pidge","_type":"ObjectivePronoun","data":null,"mods":[]}! Have you seen {"character_id":"pidge","_type":"PossessiveDeterminer","data":null,"mods":[]} sentient robot?"#;
         let expected = "Do you know Pidge? They are super smart! I love them! Have you seen their sentient robot?";
 
         let compiler = gen_compiler();

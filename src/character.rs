@@ -39,6 +39,7 @@ pub enum Pronouns {
     Custom {
         subjective: String,
         objective: String,
+        possessive_determiner: String,
         possessive: String,
         conjugate_case: ConjugatePerson,
     },
@@ -49,11 +50,13 @@ impl Pronouns {
         subjective: String,
         objective: String,
         possessive: String,
+        possessive_determiner: String,
         conjugate_case: ConjugatePerson,
     ) -> Self {
         Self::Custom {
             subjective,
             objective,
+            possessive_determiner,
             possessive,
             conjugate_case,
         }
@@ -155,7 +158,7 @@ impl GrammaticalCharacter {
         .to_string()
     }
 
-    pub fn possessive_pronoun(&self) -> String {
+    pub fn possessive_determiner(&self) -> String {
         match &self.pronouns {
             Pronouns::HeHim => "his".to_string(),
             Pronouns::SheHer => "her".to_string(),
@@ -173,6 +176,31 @@ impl GrammaticalCharacter {
                 format!("{name}'{end_char}")
             }
             Pronouns::XeXyr => "xyr".to_string(),
+            Pronouns::Custom {
+                possessive_determiner,
+                ..
+            } => possessive_determiner.to_string(),
+        }
+    }
+
+    pub fn possessive_pronoun(&self) -> String {
+        match &self.pronouns {
+            Pronouns::HeHim => "his".to_string(),
+            Pronouns::SheHer => "hers".to_string(),
+            Pronouns::ItIts => "its".to_string(),
+            Pronouns::TheyThem => "theirs".to_string(),
+            Pronouns::Name => {
+                let name_ends_in_s = matches!(
+                    self.name.chars().last().map(|c| c.to_ascii_lowercase()),
+                    Some('s')
+                );
+
+                let name = &self.name;
+                let end_char = if name_ends_in_s { "" } else { "s" };
+
+                format!("{name}'{end_char}")
+            }
+            Pronouns::XeXyr => "xyrs".to_string(),
             Pronouns::Custom { possessive, .. } => possessive.to_string(),
         }
     }
@@ -270,12 +298,12 @@ pub(crate) mod tests {
                 "{} is super smart! I love {}! Have you seen {} sentient robot?",
                 &pidge.name,
                 pidge.objective_pronoun(),
-                pidge.possessive_pronoun(),
+                pidge.possessive_determiner(),
             ),
             "Pidge is super smart! I love them! Have you seen their sentient robot?"
         );
         assert_eq!(
-            format!("{} lion has been lost.", alfons.possessive_pronoun(),),
+            format!("{} lion has been lost.", alfons.possessive_determiner(),),
             "Alfons' lion has been lost.",
         );
         assert_eq!(
@@ -283,7 +311,7 @@ pub(crate) mod tests {
                 "{} is still going through puberty. Give {} some time to grow into {} legs.",
                 &tupo.name,
                 tupo.objective_pronoun(),
-                tupo.possessive_pronoun(),
+                tupo.possessive_determiner(),
             ),
             "Tupo is still going through puberty. Give xem some time to grow into xyr legs."
         );
